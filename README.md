@@ -22,14 +22,14 @@ $ cd ../other-repo && mnemon status      # -> ~/.mnemon/data/other-repo/
 ## Install
 
 ```sh
-git clone https://github.com/mnemon-dev/mnemon-auto
+git clone https://github.com/gscode1/mnemon-auto
 cd mnemon-auto && ./install.sh
 ```
 
 Or one line:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/mnemon-dev/mnemon-auto/main/mnemon -o ~/.local/bin/mnemon && chmod +x ~/.local/bin/mnemon
+curl -fsSL https://raw.githubusercontent.com/gscode1/mnemon-auto/main/mnemon -o ~/.local/bin/mnemon && chmod +x ~/.local/bin/mnemon
 ```
 
 You need the real `mnemon` installed first, and `~/.local/bin` ahead of it on your PATH. The installer checks this and tells you the exact line to add if something is off.

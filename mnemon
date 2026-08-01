@@ -1,6 +1,6 @@
 #!/bin/sh
 # mnemon-auto: per-project store shim for the mnemon memory CLI.
-# https://github.com/mnemon-dev/mnemon-auto
+# https://github.com/gscode1/mnemon-auto
 # Bypass: export MNEMON_STORE=<name> or pass --store yourself.
 
 # Resolve our own absolute path so we never exec ourselves.
