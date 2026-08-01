@@ -1,0 +1,54 @@
+#!/bin/sh
+# mnemon-auto: per-project store shim for the mnemon memory CLI.
+# https://github.com/mnemon-dev/mnemon-auto
+# Bypass: export MNEMON_STORE=<name> or pass --store yourself.
+
+# Resolve our own absolute path so we never exec ourselves.
+self=$(cd -P -- "$(dirname -- "$0")" && pwd -P)/$(basename -- "$0")
+
+# Find the real mnemon binary on PATH, skipping ourselves.
+real=
+oldifs=$IFS; IFS=:
+for dir in $PATH; do
+    [ -n "$dir" ] || dir=.
+    cand=$dir/mnemon
+    if [ -x "$cand" ] && [ ! -d "$cand" ]; then
+        resolved=$(cd -P -- "$dir" 2>/dev/null && pwd -P)/mnemon
+        if [ "$resolved" != "$self" ]; then
+            real=$cand
+            break
+        fi
+    fi
+done
+IFS=$oldifs
+if [ -z "$real" ]; then
+    echo "mnemon-auto: real mnemon binary not found on PATH; see https://github.com/mnemon-dev/mnemon#install" >&2
+    exit 127
+fi
+
+# --global as first arg means the global store.
+if [ "$1" = "--global" ]; then
+    shift
+    exec "$real" --store global "$@"
+fi
+
+# Bypass cases: caller chose a store, env override, store management,
+# or any help/version flag.
+case $1 in
+    store|setup|help|completion) exec "$real" "$@" ;;
+esac
+if [ -n "${MNEMON_STORE+x}" ]; then
+    exec "$real" "$@"
+fi
+for arg in "$@"; do
+    case $arg in
+        --store|--store=*|-h|--help|-v|--version) exec "$real" "$@" ;;
+    esac
+done
+
+# Derive store from git repo root (or PWD outside a repo).
+top=$(git rev-parse --show-toplevel 2>/dev/null) || top=$PWD
+store=$(basename -- "$top" | tr 'A-Z' 'a-z' | tr -c 'a-z0-9\n' '-' | sed 's/--*/-/g; s/^-//; s/-$//')
+[ -n "$store" ] || store=default
+
+exec "$real" --store "$store" "$@"
