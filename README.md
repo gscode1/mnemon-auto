@@ -4,11 +4,11 @@ Per-project memory for [mnemon](https://github.com/mnemon-dev/mnemon), with zero
 
 ## The problem
 
-mnemon saves everything to one global store unless you pass `--store` or export `MNEMON_STORE` on every call. Nobody remembers to do that — so memories from all your projects end up mixed together in one big pile.
+mnemon saves everything to one global store unless you pass `--store` or set `MNEMON_STORE` on every call. Nobody does — so memories from all your projects pile up together.
 
 ## The fix
 
-mnemon-auto is a tiny shim that sits in front of the real `mnemon` binary. It looks at the git repo you're in and picks the store for you. You keep using `mnemon` exactly as before — it just goes to the right place.
+mnemon-auto is a tiny shim in front of the real `mnemon` binary. It picks the store from the git repo you're in. You use `mnemon` exactly as before — it just lands in the right place.
 
 ```
 # before: everything lands in one global store
@@ -32,7 +32,7 @@ Or one line:
 curl -fsSL https://raw.githubusercontent.com/gscode1/mnemon-auto/main/mnemon -o ~/.local/bin/mnemon && chmod +x ~/.local/bin/mnemon
 ```
 
-You need the real `mnemon` installed first, and `~/.local/bin` ahead of it on your PATH. The installer checks this and tells you the exact line to add if something is off.
+Requires the real `mnemon` installed and `~/.local/bin` ahead of it on PATH. The installer checks both and prints the exact fix if something's off.
 
 ## How it works
 
@@ -41,7 +41,7 @@ You need the real `mnemon` installed first, and `~/.local/bin` ahead of it on yo
 - **Auto-create**: new stores are created on first use. Nothing to configure.
 - **Easy bypass**: `--store`, `MNEMON_STORE`, `--global` (first arg = global store), and the `store`/`setup`/`help`/`completion` subcommands all skip the shim.
 
-Works with any agent harness (pi, Claude Code, Cursor, ...) that shells out to `mnemon` — they all hit the shim automatically.
+Works with any agent harness (pi, Claude Code, Cursor, …) that shells out to `mnemon` — they all hit the shim.
 
 ## Uninstall
 
@@ -49,4 +49,4 @@ Works with any agent harness (pi, Claude Code, Cursor, ...) that shells out to `
 ./install.sh --uninstall
 ```
 
-Or just `rm ~/.local/bin/mnemon`. Your stored memories stay under `~/.mnemon/data/` until you remove them with `mnemon store remove <name>`.
+Or just `rm ~/.local/bin/mnemon`. Memories stay under `~/.mnemon/data/` until you run `mnemon store remove <name>`.
